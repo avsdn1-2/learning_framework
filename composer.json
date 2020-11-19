@@ -1,0 +1,15 @@
+{
+  "name": "hillel/framework",
+  "description": "Learning framework",
+  "autoload": {
+    "psr-4": {
+      "Framework\\": "src",
+      "App\\": "app"
+    }
+  },
+  "require": {
+    "php": "^7.0",
+    "pimple/pimple": "~3.0",
+    "nikic/fast-route": "^1.3"
+  }
+}
