@@ -10,6 +10,10 @@ class HomeController extends AbstractController
 {
     public function index()
     {
-        echo $this->get('config_dir');exit;
+        return $this->render('index.html.twig', [
+            'title' => 'title',
+            'heading' => '<a href="#">Heading</a>',
+            'message' => 'Test Message'
+        ]);
     }
 }

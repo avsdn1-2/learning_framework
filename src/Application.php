@@ -7,7 +7,9 @@ namespace Framework;
 use FastRoute\Dispatcher;
 use Framework\Controller\AbstractController;
 use Framework\Provider\ConfigServiceProvider;
+use Framework\Provider\DatabaseServiceProvider;
 use Framework\Provider\RouterServiceProvider;
+use Framework\Provider\TemplateServiceProvider;
 use Pimple\Container;
 
 class Application
@@ -17,7 +19,8 @@ class Application
 
     public function __construct()
     {
-        $this->initContainer();
+        $this->boot();
+        $this->initProviders();
     }
 
 
@@ -48,19 +51,25 @@ class Application
                 $handler = $routeInfo[1];
                 $vars = $routeInfo[2];
 
-                $this->callControllerAction($handler);
+                echo $this->callControllerAction($handler);
 
                 break;
         }
     }
 
-    private function initContainer()
+    private function initProviders()
+    {
+        $this->container->register(new RouterServiceProvider());
+        $this->container->register(new TemplateServiceProvider());
+        $this->container->register(new DatabaseServiceProvider());
+    }
+
+    private function boot()
     {
         $container = new Container();
+        $container['app'] = $this;
         $container['config_dir'] = $this->getConfigurationDir();
         $container->register(new ConfigServiceProvider());
-        $container->register(new RouterServiceProvider());
-
         $this->container = $container;
     }
 
@@ -79,5 +88,15 @@ class Application
     private function getConfigurationDir(): string
     {
         return __DIR__ . '/../config/';
+    }
+
+    public function getTemplatePath(): string
+    {
+        return __DIR__ . '/../'. $this->container['app.template_dir'];
+    }
+
+    public function getCachePath(): string
+    {
+        return __DIR__ . '/../var/'. $this->container['app.cache_dir'];
     }
 }
